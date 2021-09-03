@@ -4,21 +4,12 @@ package model;
 
 public class User {
     
-    public int id;
     public String userName;
     public String gender;
     public String Phone;
     public String address;
     public String cpf;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-    
     public String getUserName() {
         return userName;
     }

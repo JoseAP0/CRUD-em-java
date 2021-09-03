@@ -106,7 +106,7 @@ public class DAO_scripts {
     
     public void update (User user){
         //cria a query
-        String query = "UPDATE tab_alunos SET user_name= ?, gender= ?, phone= ?, address= ?, cpf= ?" + "WHERE cpf=?";
+        String query = "UPDATE tab_alunos SET user_name= ?, gender= ?, phone= ?, address= ?" + "WHERE cpf=?";
         //cria a connection e o prepared statement
         Connection con = null;
         PreparedStatement pstm = null;

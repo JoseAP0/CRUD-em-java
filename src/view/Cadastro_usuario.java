@@ -5,12 +5,12 @@
  */
 package view;
 
-import java.util.List;
-import javax.swing.ListSelectionModel;
+
+
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import model.*;
-import model.TableConfig;
+
+
 /**
  *
  * @author Jos� Augusto
@@ -52,6 +52,7 @@ public class Cadastro_usuario extends javax.swing.JFrame {
         deleteButton = new javax.swing.JButton();
         createButton = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         userTable = new javax.swing.JTable();
 
@@ -115,6 +116,13 @@ public class Cadastro_usuario extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Limpar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -144,7 +152,9 @@ public class Cadastro_usuario extends javax.swing.JFrame {
                                 .addComponent(jLabel5)
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(539, 539, 539)
+                        .addGap(448, 448, 448)
+                        .addComponent(jButton1)
+                        .addGap(18, 18, 18)
                         .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(updateButton)
@@ -180,7 +190,8 @@ public class Cadastro_usuario extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteButton)
                     .addComponent(createButton)
-                    .addComponent(updateButton))
+                    .addComponent(updateButton)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -193,6 +204,11 @@ public class Cadastro_usuario extends javax.swing.JFrame {
             }
         ));
         userTable.setShowGrid(false);
+        userTable.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                userTableFocusLost(evt);
+            }
+        });
         userTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 userTableMouseClicked(evt);
@@ -242,6 +258,7 @@ public class Cadastro_usuario extends javax.swing.JFrame {
         u.setGender(genderBox.getSelectedItem().toString());
         
         dao.save(u);
+        clearFields();
         fillTable();
         
     }//GEN-LAST:event_createButtonActionPerformed
@@ -261,27 +278,39 @@ public class Cadastro_usuario extends javax.swing.JFrame {
     private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nameFieldActionPerformed
-
+    
+    private void clearFields(){
+        nameField.setText("");
+        phoneField.setText("");
+        adressField.setText("");
+        cpfField.setText("");
+        genderBox.setSelectedItem(false);
+    }
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        // TODO add your handling code here:
+        DAO_scripts dao = new DAO_scripts();
+        
+        String key = cpfField.getText();
+        
+        dao.delete(key);
+        clearFields();
+        fillTable();
+        
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        DAO_scripts dao = new DAO_scripts();
         User user = new User();
+        DAO_scripts dao = new DAO_scripts();
+                
+        user.setAddress(adressField.getText());
+        user.setCpf(cpfField.getText());
+        user.setGender(genderBox.getSelectedItem().toString());
+        user.setPhone(phoneField.getText());
+        user.setUserName(nameField.getText());
         
-        System.out.println(""+userTable.getRowCount());
-        
-        int index = userTable.getSelectedRow();
-        user = dao.read().get(index);
-        
-        nameField.setText(user.getUserName());
-        adressField.setText(user.getAddress());
-        cpfField.setText(user.getCpf());
-        phoneField.setText(user.getPhone());
-        genderBox.setSelectedItem(user.getGender());
-        
+                
         dao.update(user);
+        clearFields();
+        fillTable();
     }//GEN-LAST:event_updateButtonActionPerformed
 
     private void userTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_userTableKeyReleased
@@ -296,7 +325,7 @@ public class Cadastro_usuario extends javax.swing.JFrame {
         
         int index = userTable.getSelectedRow()-1;
         
-        user = dao.read().get(index);
+        user = dao.read().get(index+1);
         
         nameField.setText(user.getUserName());
         adressField.setText(user.getAddress());
@@ -304,6 +333,14 @@ public class Cadastro_usuario extends javax.swing.JFrame {
         phoneField.setText(user.getPhone());
         genderBox.setSelectedItem(user.getGender());
     }//GEN-LAST:event_userTableMouseClicked
+
+    private void userTableFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userTableFocusLost
+    
+    }//GEN-LAST:event_userTableFocusLost
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    clearFields();
+    }//GEN-LAST:event_jButton1ActionPerformed
     
     private void fillTable(){
         
@@ -319,22 +356,6 @@ public class Cadastro_usuario extends javax.swing.JFrame {
                 u.getAddress(),
                 u.getCpf()});
         }
-       /*
-        userTable.getColumnModel().getColumn(0).setPreferredWidth(80);
-        userTable.getColumnModel().getColumn(0).setResizable(false);
-        userTable.getColumnModel().getColumn(1).setPreferredWidth(180);
-        userTable.getColumnModel().getColumn(1).setResizable(false);
-        userTable.getColumnModel().getColumn(2).setPreferredWidth(280);
-        userTable.getColumnModel().getColumn(2).setResizable(false);
-        userTable.getColumnModel().getColumn(3).setPreferredWidth(380);
-        userTable.getColumnModel().getColumn(3).setResizable(false);
-        userTable.getColumnModel().getColumn(4).setPreferredWidth(480);
-        userTable.getColumnModel().getColumn(4).setResizable(false);
-        
-        userTable.getTableHeader().setReorderingAllowed(false);
-        userTable.setAutoResizeMode(userTable.AUTO_RESIZE_OFF);
-        userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        */
     }
     /**
      * @param args the command line arguments
@@ -378,6 +399,7 @@ public class Cadastro_usuario extends javax.swing.JFrame {
     private javax.swing.JButton createButton;
     private javax.swing.JButton deleteButton;
     private javax.swing.JComboBox<String> genderBox;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
